@@ -4,8 +4,8 @@ import {partTwo} from './partTwo';
 
 const TEST = __dirname + '/data_test.txt'
 const FULL = __dirname + '/data_full.txt'
-const TEST_RESULT_1 = 1
-const TEST_RESULT_2 = 1
+const TEST_RESULT_1 = 2
+const TEST_RESULT_2 = 4
 
 test.describe('day 2', () => {
 
