@@ -3,10 +3,9 @@ import {partOne} from './partOne';
 import {partTwo} from './partTwo';
 
 const TEST = __dirname + '/data_test.txt'
-const TEST2 = __dirname + '/data_test2.txt'
 const FULL = __dirname + '/data_full.txt'
-const TEST_RESULT_1 = 161
-const TEST_RESULT_2 = 48
+const TEST_RESULT_1 = 1
+const TEST_RESULT_2 = 1
 
 test.describe('day 3', () => {
 
@@ -20,7 +19,7 @@ test.describe('day 3', () => {
   });
 
   test(`partTwo test and final result`, async () => {
-    const output = await partTwo(TEST2);
+    const output = await partTwo(TEST);
     expect(output).toBe(TEST_RESULT_2);
     try {
       const output = await partTwo(FULL);
