@@ -4,10 +4,10 @@ import {partTwo} from './partTwo';
 
 const TEST = __dirname + '/data_test.txt'
 const FULL = __dirname + '/data_full.txt'
-const TEST_RESULT_1 = 18
-const TEST_RESULT_2 = 9
+const TEST_RESULT_1 = 1
+const TEST_RESULT_2 = 1
 
-test.describe('day 4', () => {
+test.describe('day 3', () => {
 
   test(`partOne test and final result`, async () => {
     const output = await partOne(TEST);
