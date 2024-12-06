@@ -2,36 +2,42 @@ import {readFile} from '../utils/readFile';
 
 export async function partTwo(path: string) {
   const text = await readFile(path);
+  const mainBoard = new Board(text) //board used to generate other boards
+  const longestLineSize = Math.max(mainBoard.maxX, mainBoard.maxY) + 1
   let stuckCount = 0;
-  const bb = new Board(text)
-  const longestLineSize = Math.max(bb.maxX, bb.maxY) + 1
-  bb.grid.forEach((row, y) => {
+
+  mainBoard.grid.forEach((row, y) => {
     row.forEach((_, x) => {
-      if (bb.startingPoint.x === x && bb.startingPoint.y === y) {
+      // ignore start point
+      if (mainBoard.startingPoint.x === x && mainBoard.startingPoint.y === y) {
         return;
       }
+
       const b = new Board(text)
-      b.grid[y][x].blocked = true;
+      // ignore if obstacle already exist on the filed
+      if (b.grid[y][x].blocked) {
+        return;
+      }
+      b.grid[y][x].blocked = true; //set obstacle on new board
+
       const p = new Player(b)
-      let counter = 0
+
+      let counter = 0 // if this number is too big we detected loop!
 
       while (p.isOnEdge() === false) {
+        // infinite loop breaker
         if (counter > longestLineSize) {
           stuckCount++
           return;
         }
         p.move()
-        if (b.grid[p.pos.y][p.pos.x].mark){
-          counter++
-        } else {
-          counter = 0
-        };
-        b.markPosition(p.pos.x, p.pos.y)
+        p.isPlayerOnMarkedPosition() ? counter++ : counter = 0
+        p.markCurrentPosition()
       }
 
     })
   })
-  console.log(stuckCount);
+
   return stuckCount
 }
 
@@ -82,16 +88,13 @@ class Board {
 
 class Player {
   pos : {x: number, y: number} = {x: 0, y: 0};
-  points: number;
   direction: 'T' | 'R' | 'B' | 'L'
   readonly boardData: Board;
 
   constructor(
     boardData: Board,
-    points = 0,
     direction = 'T' as const,
   ) {
-    this.points = points
     this.pos.x = boardData.startingPoint.x
     this.pos.y = boardData.startingPoint.y
     this.direction = direction
@@ -144,7 +147,14 @@ class Player {
         break;
       }
     }
-    this.points++
+  }
+
+  isPlayerOnMarkedPosition() {
+    return this.boardData.grid[this.pos.y][this.pos.x].mark
+  }
+
+  markCurrentPosition() {
+    this.boardData.markPosition(this.pos.x, this.pos.y)
   }
 
   isOnEdge() {

@@ -8,9 +8,10 @@ export async function partOne(path: string) {
 
   while (p.isOnEdge() === false) {
     p.move()
+    p.markCurrentPosition()
   }
 
-  return b.count()
+  return b.getMarkedFieldsAmount()
 }
 
 type BoardField = {blocked: boolean, mark: boolean}
@@ -44,7 +45,7 @@ class Board {
   markPosition(x: number, y: number) {
     return this.grid[y][x].mark = true;
   }
-  count() {
+  getMarkedFieldsAmount() {
     let count = 0;
     this.grid.forEach((row, y) => {
       row.forEach((filed, x) => {
@@ -59,16 +60,13 @@ class Board {
 
 class Player {
   pos : {x: number, y: number} = {x: 0, y: 0};
-  points: number;
   direction: 'T' | 'R' | 'B' | 'L'
   readonly boardData: Board;
 
   constructor(
     boardData: Board,
-    points = 0,
     direction = 'T' as const,
   ) {
-    this.points = points
     this.pos.x = boardData.startingPoint.x
     this.pos.y = boardData.startingPoint.y
     this.direction = direction
@@ -121,7 +119,9 @@ class Player {
         break;
       }
     }
-    this.points++
+  }
+
+  markCurrentPosition() {
     this.boardData.markPosition(this.pos.x, this.pos.y)
   }
 
