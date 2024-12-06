@@ -2,14 +2,28 @@ import {readFile} from '../utils/readFile';
 
 export async function partTwo(path: string) {
   const text = await readFile(path);
-  const mainBoard = new Board(text) //board used to generate other boards
+  const mainBoard = new Board(text) //board used to generate other boards and find fields to ignore
   const longestLineSize = Math.max(mainBoard.maxX, mainBoard.maxY) + 1
   let stuckCount = 0;
+
+  const p = new Player(mainBoard)
+  while (p.isOnEdge() === false) {
+    p.move()
+    p.markCurrentPosition()
+  }
+  const positionsToIgnore = mainBoard.getNotMarkedFieldsPositions()
 
   mainBoard.grid.forEach((row, y) => {
     row.forEach((_, x) => {
       // ignore start point
       if (mainBoard.startingPoint.x === x && mainBoard.startingPoint.y === y) {
+        return;
+      }
+
+      //ignore if on the list
+      if (positionsToIgnore.find(
+        ({x: xIgnore,y:yIgnore})=> x === xIgnore && y === yIgnore)
+      ) {
         return;
       }
 
@@ -73,16 +87,16 @@ class Board {
   markPosition(x: number, y: number) {
     return this.grid[y][x].mark = true;
   }
-  count() {
-    let count = 0;
+  getNotMarkedFieldsPositions() {
+    let arr:{x: number, y: number}[] = [];
     this.grid.forEach((row, y) => {
       row.forEach((filed, x) => {
-        if (filed.mark) {
-          count++
+        if (!filed.mark) {
+          arr.push({x: x, y: y});
         }
       })
     })
-    return count
+    return arr
   }
 }
 
