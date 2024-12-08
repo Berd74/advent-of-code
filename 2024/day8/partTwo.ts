@@ -59,7 +59,7 @@ class AntennasPairManager {
     const lowerX = Math.min(a1.x, a2.x)
     const direction = a1.x > a2.x
 
-    for (let i = 1; i < 100; i++) {
+    for (let i = 1; i < this.grid.length; i++) {
       const x1 = biggerX + ((biggerX - lowerX) * i)
       const x2 = lowerX - ((biggerX - lowerX) * i)
       const anti1: Antinode = {
@@ -128,7 +128,5 @@ const generateList = (start: number, end: number): number[] => {
   for (let i = start; i <= end; i++) {
     list.push(i);
   }
-  // Add the last number twice
-  list.push(end);
   return list;
 };
