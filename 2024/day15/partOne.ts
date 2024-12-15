@@ -23,7 +23,7 @@ export async function partOne(path: string) {
   return sum;
 }
 
-type Element = undefined | 'box' | 'wall';
+type Element = 'empty' | 'box' | 'wall';
 type Grid = Field[][]
 type Direction = '<' | '>' | '^' | 'v'
 type Moves = Direction[]
@@ -55,8 +55,8 @@ class Field {
         targetField = this.map.getField(this.pos.cloneAdd(0,-1))
         break;
     }
-    if (targetField && targetField.element === undefined) {
-      this.element = undefined;
+    if (targetField && targetField.element === 'empty') {
+      this.element = 'empty';
       targetField.element = 'box';
     } else {
       throw Error(`Unable to move field at position: ${this.pos.toString()} in direction ${dir} 
@@ -184,7 +184,7 @@ class Map {
         return new Field(
           new Pos(y, x),
           this,
-          character === '#' ? 'wall' : character === 'O' ? 'box' : undefined
+          character === '#' ? 'wall' : character === 'O' ? 'box' : 'empty'
         );
       });
     });
