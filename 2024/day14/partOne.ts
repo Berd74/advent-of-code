@@ -7,9 +7,9 @@ export async function partOne(path: string, w: number, h: number) {
   const bots = Bot.botsFromDescription(lines);
   const map = new Map(w, h);
   map.attachBots(bots);
-  map.displayFieldsWithBots();
+  // map.displayFieldsWithBots();
   map.moveAllBots(100);
-  map.displayFieldsWithBots();
+  // map.displayFieldsWithBots();
 
   const q1: Bot[] = []
   const q2: Bot[] = []
@@ -17,10 +17,6 @@ export async function partOne(path: string, w: number, h: number) {
   const q4: Bot[] = []
   const splitX = Math.ceil(w/2)-1
   const splitY = Math.ceil(h/2)-1
-  console.log('--');
-  console.log(splitX);
-  console.log(splitY);
-  console.log('--');
 
   bots.forEach(b => {
     const x = b.pos.x
@@ -42,11 +38,6 @@ export async function partOne(path: string, w: number, h: number) {
       }
     }
   })
-  console.log(q1.length);
-  console.log(q2.length);
-  console.log(q3.length);
-  console.log(q4.length);
-
 
   return q1.length * q2.length * q3.length * q4.length;
 }
@@ -98,8 +89,6 @@ class Bot {
     const newPosY = this.pos.y + (this.vector.y * steps);
     const lenY = this.map.maxY + 1;
     const restY = Math.abs(newPosY % lenY);
-    // console.log(this.pos.y, newPosY);
-    // console.log(this.pos.x, newPosX);
 
     if (newPosX > this.map.maxX) {
       this.pos.x = restX;
@@ -174,6 +163,7 @@ class Map {
     });
   }
 
+  //only for testing
   displayFieldsWithBots() {
     const a = this.bots.map(b => b.name + " " + b.pos).join(" | ")
     console.log(a);
@@ -190,36 +180,7 @@ class Map {
   }
 
   findBots(pos: Pos) {
-    return this.bots.filter(b => b.pos.x === pos.x && b.pos.y === pos.y);
-  }
-
-  getFieldsAround(pos: Pos): Field[] {
-    const fields: Field[] = [];
-    const lookY = [-1, 0, 1];
-    const lookX = [-1, 0, 1];
-    lookY.forEach(y => {
-      lookX.forEach(x => {
-        const newPosX = pos.x + x;
-        const newPosY = pos.y + y;
-        if (y === 0 && x === 0) {return;}
-        if (y === -1 && x === -1) {return;}
-        if (y === -1 && x === 1) {return;}
-        if (y === 1 && x === -1) {return;}
-        if (y === 1 && x === 1) {return;}
-        const f = this.getField(new Pos(newPosY, newPosX));
-        if (!f) {return;}
-        fields.push(f);
-      });
-    });
-    return fields;
-  }
-
-  getField(pos: Pos): Field | undefined {
-    const x = pos.x;
-    const y = pos.y;
-    if (!(x >= 0 && y >= 0)) {return;}
-    if (!(x <= this.maxX && y <= this.maxY)) {return;}
-    return this.grid[y][x];
+    return this.bots.filter(b => b.pos.isEqual(pos));
   }
 
 }
