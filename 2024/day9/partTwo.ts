@@ -40,6 +40,19 @@ export async function partTwo(path: string) {
   const lastFile = unzip3.findLast(el => 'size' in el && el.id >= 0) as File
   const lastFileId = lastFile.id
 
+  // const rx = unzip3
+  //   .reduce((cur, next) => {
+  //     if ('size' in next) {
+  //       for (let i = 0; i < next.size; i++) {
+  //         cur.push({id: next.id})
+  //       }
+  //     } else {
+  //       cur.push(next)
+  //     }
+  //     return cur
+  //   }, [] as {id: number}[])
+  // console.log(rx.map(el => el.id === -1 ? '[.]' : "[" +el.id.toString()+']').join(''));
+
   for (let id = lastFileId; id >= 0; id--) {
     const file = unzip3.findLast(el => el.id === id) as File
     const fileIndex = unzip3.findLastIndex(el => el.id === id)
@@ -50,8 +63,21 @@ export async function partTwo(path: string) {
     unzip3 = unzip3.filter(el => el.id !== file.id)
     const removed = unzip3.splice(space.startIndex, file.size , file);
     unzip3.splice(fileIndex-removed.length+1, 0 , {size: removed.length, id: -1});
-  }
+    // console.log('moving index:' + file.id);
+    // const r = unzip3
+    //   .reduce((cur, next) => {
+    //     if ('size' in next) {
+    //       for (let i = 0; i < next.size; i++) {
+    //         cur.push({id: next.id})
+    //       }
+    //     } else {
+    //       cur.push(next)
+    //     }
+    //     return cur
+    //   }, [] as {id: number}[])
+    // console.log(r.map(el => el.id === -1 ? '[.]' : "[" +el.id.toString()+']').join(''));
 
+  }
 
 
   const r = unzip3
