@@ -6,21 +6,6 @@ export async function partOne(path: string) {
   const text = await readFile(path);
   const lines = text.split('\n');
 
-
-
-  // return array.filter((obj) => {
-  //   // Create a unique string representation of the object's properties
-  //   const key = JSON.stringify({ x: obj.x, y: obj.y, haker: obj.haker });
-  //
-  //   // Check if the key is already in the Set
-  //   if (seen.has(key)) {
-  //     return false; // Exclude the duplicate
-  //   }
-  //
-  //   seen.add(key); // Add the key to the Set
-  //   return true; // Include the object
-  // });
-
   async function main(cheat: boolean) {
     const map = new Map(lines);
     Player.map = map
@@ -33,30 +18,10 @@ export async function partOne(path: string) {
     let smallestScore: number = Infinity;
     let largestScore: number = 0;
     let best: Player | undefined;
-    let a = 0;
-
-    const seen = new Set();
 
     while (map.players.some(p => p.alive)) {
 
-      // map.players.filter((p) => {
-      //   const key = JSON.stringify({
-      //     a: p.cheatedPos?.toString(),
-      //     b: p.pos?.toString(),
-      //     c: p.
-      //     obj.haker
-      //   });
-      //   if (seen.has(key)) {
-      //     return false; // Exclude the duplicate
-      //   }
-      //
-      //   seen.add(key); // Add the key to the Set
-      //   return true; // Include the object
-      // });
-
-      // console.log("iteration: " + ++a);
       map.players = map.players.map(p => p.move()).flat();
-      // console.log( map.players.length);
 
       map.players.forEach((p, i) => {
         if (p.score > largestScore) {
@@ -74,55 +39,7 @@ export async function partOne(path: string) {
         }
       });
 
-      if (cheat) {
-        // Wait for 100ms before the next iteration
-        // console.log(map.players.map(p => ({p: p.pos, cheatedPod: p.cheatedPos})));
-        if (Math.abs(map.players.length - bestLenght) > 100 ) {
-          bestLenght = map.players.length
-          console.log(bestLenght);
-        }
-        // const aa = map.getFieldAtXY(3,3)?.visitedPoints
-        // console.log(aa);
-        // await new Promise(resolve => setTimeout(resolve, 10));
-      }
-
-
     }
-
-    // const visitedFieldsPos = new Set();
-
-    winners
-      .filter(p => p.score === smallestScore)
-      .forEach(winner => {
-        // winner.history.forEach(f => {
-        //   visitedFieldsPos.add(f.pos.toString());
-        // });
-      });
-
-    // console.log('winners scores');
-    // console.log(winners.map(p => p.score).join(','));
-    // console.log('---------------');
-
-    // if (best && cheat) {
-    //   setInterval(() => {
-    //     map.grid.forEach((row, y) => {
-    //       const line = row.map((field, x) => {
-    //         if (best!.history.find(wf => wf.pos.isEqual(field.pos))) {
-    //           if (!cheat) {
-    //             const t = Field.cache[field.pos.toString()].toString()
-    //             return t.slice(t.length-1,t.length)
-    //           }
-    //           return 'O';
-    //         }
-    //         if (field.wall) {
-    //           return '▒';
-    //         }
-    //         return '.';
-    //       }).join('');
-    //       console.log(line);
-    //     });
-    //   }, 5000)
-    // }
 
    return {smallestScore, winners}
   }

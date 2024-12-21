@@ -1,9 +1,12 @@
 import {readFile} from '../utils/readFile';
 
 let noCheatBest = 0;
-const timeToSave = 100
-const availableCheatDistance = 20
-export async function partTwo(path: string) {
+let timeToSave: number;
+let availableCheatDistance: number;
+export async function partTwo(path: string, _timeToSave: number, _availableCheatDistance: number) {
+  timeToSave = _timeToSave
+  availableCheatDistance = _availableCheatDistance
+
   const text = await readFile(path);
   const lines = text.split('\n');
 
@@ -14,7 +17,6 @@ export async function partTwo(path: string) {
     player.cheater = cheat;
     map.players = [player];
 
-    let bestLenght = 0;
     const winners: Player[] = [];
     let smallestScore: number = Infinity;
     let largestScore: number = 0;
@@ -39,74 +41,20 @@ export async function partTwo(path: string) {
         }
       });
 
-      if (cheat) {
-        // Wait for 100ms before the next iteration
-        // console.log(map.players.map(p => ({p: p.pos, cheatedPod: p.cheatedPos})));
-        if (Math.abs(map.players.length - bestLenght) > 1000) {
-          bestLenght = map.players.length;
-          console.log('len:' + bestLenght);
-        }
-          // console.log('no cheaters');
-        //   console.log(
-        //     map.players
-        //       .filter(p => !p.cheated)
-        //       .map((p, i) => ({xy: p.pos.toString(), scr: p.score}))
-        //   )
-        //   console.log('cheaters');
-        //   console.log(
-        //     map.players
-        //       .filter(p => p.cheated)
-        //       .map((p, i) => ({xy: p.pos.toString(), scr: p.score}))
-        //   )
-        // const aa = map.getFieldAtXY(3,3)?.visitedPoints
-        // console.log(aa);
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-
-
     }
-
-
-      // .filter(p => p.score === smallestScore)
-      // .forEach(winner => {
-        // winner.history.forEach(f => {
-        //   visitedFieldsPos.add(f.pos.toString());
-        // });
-      // });
-
 
     return {smallestScore, winners, best, map};
   }
-
-  // noCheat.map.grid.forEach((row, y) => {
-  //   const line = row.map((field, x) => {
-  //     const score: string | undefined = Field.cache[field.pos.toString()]?.toString();
-  //
-  //     if (score) {
-  //       return score.slice(score.length - 1, score.length);
-  //     }
-  //     if (field.wall) {
-  //       return '▒';
-  //     }
-  //     return '.';
-  //   }).join('');
-  //   console.log(line);
-  // });
 
   const noCheat = await main(false);
   noCheatBest = noCheat.smallestScore
   const cheat = await main(true)
 
-  // const a = cheat.winners
-  //   .map((p, i) => ({xy: p.pos.toString(), scr: p.score}))
-  // console.log(a);
-
   const savedTimes = cheat.winners.map(winner => {
     return Math.abs(winner.score - noCheat.smallestScore)
   }).filter(savedTime => savedTime >= timeToSave)
 
-  console.log(savedTimes);
-
+  console.log(savedTimes.length);
   return savedTimes.length;
 }
 
@@ -207,6 +155,9 @@ class Player {
       if (clone.cheater && clone.cheated) {
         const fromCache = Field.cache[clone.pos.toString()];
         if (clone.score + timeToSave <= fromCache) {
+          // game changer here
+          clone.score += noCheatBest - fromCache;
+          clone.pos = Player.map.endPos.clone()
           newPlayers.push(clone);
         }
       } else if (clone.cheater && !clone.cheated) {
